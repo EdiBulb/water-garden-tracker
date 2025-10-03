@@ -12,6 +12,12 @@ export default function Home() {
 
   // 처음 페이지 로드 시 localStorage에서 오늘 기록 불러오기
   useEffect(() => {
+    // goal 불러오기
+    const savedGoal = localStorage.getItem("goal");
+    if (savedGoal) {
+      setGoal(Number(savedGoal));
+    }
+
     const savedRecords = JSON.parse(localStorage.getItem("records")) || []; // in localStorage, getItem: Retrieve data
     const todayRecord = savedRecords.find(r => r.date === today);
 
@@ -21,6 +27,13 @@ export default function Home() {
       setTotal(0);
     }
   }, [today]);
+
+  // goal 변경 시 localStorage 저장
+  const handleGoalChange = (e) => {
+    const newGoal = Number(e.target.value);
+    setGoal(newGoal);
+    localStorage.setItem("goal", newGoal);
+  };
 
 
   // 물 추가할 때 localStorage에도 반영
@@ -44,7 +57,15 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-blue-100 to-blue-200 p-6">
       <h1 className="text-3xl font-bold text-blue-700 mb-4">🌱 Water Garden Tracker</h1>
-      <p className="text-lg text-gray-700">Goal: {goal}ml</p>
+      <div className="mb-4">
+        <label className="mr-2 font-semibold">Daily Goal (ml):</label>
+        <input
+          type="number"
+          value={goal}
+          onChange={handleGoalChange}
+          className="px-2 py-1 border rounded-md"
+        />
+      </div>
       <p className="text-lg text-gray-700 mb-4">Drank: {total}ml</p>
 
       <SeedProgress total={total} goal={goal} />
