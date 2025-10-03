@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function SeedProgress({ total, goal }) {
   const progress = Math.min(total / goal, 1); // 최대 100%까지만
@@ -22,13 +23,15 @@ export default function SeedProgress({ total, goal }) {
 
   return (
     <div className="flex flex-col items-center mt-6">
-      <div className="w-40 h-40 flex items-center justify-center">
-        <img 
-          src={stageImg} 
-          alt={label} 
-          className="w-full h-full object-contain transition-all duration-700 ease-in-out transform hover:scale-110"
-        />
-      </div>
+      <motion.img
+        key={label}  // stage가 바뀔 때 애니메이션이 실행되도록 key 사용
+        src={stageImg}
+        alt={label}
+        className="w-40 h-40 object-contain"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, type: "spring" }}
+      />
       <p className="mt-2 text-xl font-semibold">{Math.floor(progress * 100)}%</p>
     </div>
   );
