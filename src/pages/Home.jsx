@@ -1,10 +1,14 @@
 import React, { useState, useEffect  } from "react";
 import SeedProgress from "../components/SeedProgress";
 import WaterInput from "../components/WaterInput";
+import CelebrationModal from "../components/CelebrationModal";
+
 
 export default function Home() {
   const [goal, setGoal] = useState(2000); // 하루 목표 (ml)
   const [total, setTotal] = useState(0);  // 누적 마신 양
+
+  const [celebrate, setCelebrate] = useState(false); // 축하 여부
 
   // 오늘 날짜 (YYYY-MM-DD 형식)
   const today = new Date().toISOString().split("T")[0]; // new Date(): Date객체 생성, T 기준으로 잘라서, 배열으로 만듬 e.g., 225-10-01
@@ -52,10 +56,19 @@ export default function Home() {
 
     // state 업데이트
     setTotal(prev => prev + Number(amount));
+
+    // 목표 달성 체크
+    if (total + amount >= goal) {
+      setCelebrate(true);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-blue-100 to-blue-200 p-6">
+      {/* 축하 모달 */}
+      <CelebrationModal show={celebrate} onClose={() => setCelebrate(false)} />
+
+
       <h1 className="text-3xl font-bold text-blue-700 mb-4">🌱 Water Garden Tracker</h1>
       <div className="mb-4">
         <label className="mr-2 font-semibold">Daily Goal (ml):</label>
