@@ -91,12 +91,17 @@ export default function Home() {
               className="w-32 h-32 animate-bounce"
             />  
 
-            {/* 물줄기 효과 */}
-            <div className="absolute top-24 left-1/2 transform -translate-x-1/2 flex flex-col space-y-1">
-              <div className="w-2 h-4 bg-sky-400 rounded-full animate-pulse"></div>
-              <div className="w-2 h-4 bg-sky-300 rounded-full animate-pulse delay-100"></div>
-              <div className="w-2 h-4 bg-sky-200 rounded-full animate-pulse delay-200"></div>
-            </div>
+            {/* 🌊 물방울 떨어지는 효과 */}
+            <motion.div
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: 1, y: 220 }} // 떨어질 거리 조정
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+              className="absolute top-24 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-1"
+            >
+              <div className="w-3 h-3 bg-sky-400 rounded-full"></div>
+              <div className="w-3 h-3 bg-sky-300 rounded-full mt-1"></div>
+              <div className="w-3 h-3 bg-sky-200 rounded-full mt-1"></div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
