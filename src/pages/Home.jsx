@@ -10,6 +10,8 @@ export default function Home() {
   const [goal, setGoal] = useState(2000); // 하루 목표 (ml)
   const [total, setTotal] = useState(0);  // 누적 마신 양
   const [celebrate, setCelebrate] = useState(false); // 축하 여부
+  const [streak, setStreak] = useState(0); // 🎖️ streak 상태 추가
+
   const [showWatering, setShowWatering] = useState(false); // 물뿌리개 여부
 
   // 오늘 날짜 (YYYY-MM-DD 형식)
@@ -32,7 +34,41 @@ export default function Home() {
     } else {
       setTotal(0);
     }
+    // streak 계산 실행
+    calculateStreak(savedRecords);
   }, [today]);
+
+  const calculateStreak = (records) => {
+    // 날짜 오름차순 정렬
+    const sorted = records.sort((a, b) => new Date(a.date) - new Date(b.date));
+    let count = 0;
+    let currentDate = new Date();
+
+    // 어제부터 거꾸로 확인
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      const recordDate = new Date(sorted[i].date);
+      const diffDays =
+        (currentDate - recordDate) / (1000 * 60 * 60 * 24);
+
+      if (diffDays < 0.5) {
+        // 오늘이면 그냥 무시
+        continue;
+      } else if (Math.abs(diffDays - 1) < 0.5 || diffDays === 0) {
+        // 하루 간격이면
+        if (sorted[i].total >= goal) {
+          count++;
+          currentDate.setDate(currentDate.getDate() - 1);
+        } else {
+          break; // 목표 미달 → streak 끊김
+        }
+      } else {
+        break; // 날짜가 연속되지 않음 → streak 종료
+      }
+    }
+
+    setStreak(count);
+  };
+
 
   // goal 변경 시 localStorage 저장
   const handleGoalChange = (e) => {
@@ -62,6 +98,9 @@ export default function Home() {
     // 물뿌리개 애니메이션 실행
     setShowWatering(true);
     setTimeout(() => setShowWatering(false), 3000);
+
+    // 🎯 streak 재계산
+    calculateStreak(savedRecords);
 
     // 목표 달성 체크
     if (total + amount >= goal) {
@@ -130,6 +169,16 @@ export default function Home() {
       <p className="text-lg text-gray-700 mb-4">Drank: {total}ml</p>
 
       <SeedProgress total={total} goal={goal} />
+      {/* 🎖️ streak 표시 */}
+      <motion.div
+        className="mt-4 px-4 py-2 bg-white/70 rounded-xl shadow text-blue-800 font-semibold"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        🔥 {streak} Day Streak!
+      </motion.div>
+
       <WaterInput onAddWater={handleAddWater} />
     </div>
   );
