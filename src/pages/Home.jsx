@@ -77,34 +77,45 @@ export default function Home() {
 
       {/* 물뿌리개 애니메이션 */}
       <AnimatePresence>
-        {showWatering && (
+      {showWatering && (
+        <>
+          {/* 🌿 물뿌리개 (회전된 상태) */}
           <motion.div
-            initial={{ opacity: 0, y: -200, rotate: -30 }}
-            animate={{ opacity: 1, y: 150, rotate: -30 }}
-            exit={{ opacity: 0, y: -200, rotate: -30 }}
+            key="watering"
+            initial={{ opacity: 0, y: -200, rotate: -45 }}
+            animate={{ opacity: 1, y: 150, rotate: -45 }}
+            exit={{ opacity: 0, y: -200, rotate: -45 }}
             transition={{ duration: 0.5 }}
-            className="absolute left-1/2 -translate-x-1/2"
+            className="absolute left-1/2 -translate-x-1/2 z-50"
           >
             <img
               src="/images/watering-can.png"
               alt="Watering can"
-              className="w-32 h-32 animate-bounce"
-            />  
-
-            {/* 🌊 물방울 떨어지는 효과 */}
-            <motion.div
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: 220 }} // 떨어질 거리 조정
-              transition={{ duration: 1.2, ease: "easeInOut" }}
-              className="absolute top-24 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-1"
-            >
-              <div className="w-3 h-3 bg-sky-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-sky-300 rounded-full mt-1"></div>
-              <div className="w-3 h-3 bg-sky-200 rounded-full mt-1"></div>
-            </motion.div>
+              className="w-32 h-32 animate-bounce transform"
+              style={{
+                transformOrigin: "top right", // 물 나오는 부분 중심으로 회전
+              }}
+            />
           </motion.div>
-        )}
-      </AnimatePresence>
+
+          {/* 💧 물방울 (독립된 좌표, 회전 영향 없음) */}
+          <motion.div
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 200 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute"
+            style={{
+              top: "11rem",   // 물 나오는 부분 기준으로 수동 조정
+              left: "50%",    // 뿌리개 이미지 끝부분 근처
+            }}
+          >
+            <div className="w-3 h-3 bg-sky-400 rounded-full mb-1"></div>
+            <div className="w-3 h-3 bg-sky-300 rounded-full mb-1"></div>
+            <div className="w-3 h-3 bg-sky-200 rounded-full mb-1"></div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
 
       <h1 className="text-3xl font-bold text-blue-700 mb-4">🌱 Water Garden Tracker</h1>
       <div className="mb-4">
